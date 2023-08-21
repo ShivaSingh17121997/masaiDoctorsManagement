@@ -8,8 +8,13 @@ const { UserModel } = require("./model/user.model")
 const jwt = require("jsonwebtoken")
 
 const app = express()
+const cors = require("cors")
+
 
 app.use(express.json())
+app.use(cors())
+
+app.use("/employee", postRouter)
 
 
 //regiter user
@@ -32,21 +37,21 @@ app.post("/signup", async (req, res) => {
 app.post("/login", async (req, res) => {
     const { email, password } = req.body
     try {
-        const user = await UserModel.findOne({email});
-        if(user){
-            bcrypt.compare(password,user.password, function(err, result){
-                if(result){
-                    const token = jwt.sign({course:"backend"}, "masai")
-                    res.json({"msg":"Login Successfull", "token":token})
+        const user = await UserModel.findOne({ email });
+        if (user) {
+            bcrypt.compare(password, user.password, function (err, result) {
+                if (result) {
+                    const token = jwt.sign({ course: "backend" }, "masai")
+                    res.json({ "msg": "Login Successfull", "token": token })
                 } else {
-                    res.json({"msg":"Wrong Credentials"})
+                    res.json({ "msg": "Wrong Credentials" })
                 }
             })
 
         } else {
-            res.json({msg:"Login Failed"})
+            res.json({ msg: "Login Failed" })
         }
-     
+
     } catch (error) {
         console.log(error)
     }
@@ -60,7 +65,7 @@ app.post("/login", async (req, res) => {
 
 app.listen(8080, async () => {
     try {
-
+        await connection
     } catch (err) {
         console.log(err)
     }
